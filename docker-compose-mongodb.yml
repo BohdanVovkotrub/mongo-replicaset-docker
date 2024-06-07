@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+  mongodb_primary:
+    networks:
+      - default
+    image: mongo:6-jammy
+    container_name: ${NAME_PRIMARY}
+    restart: always
+    command: ["--replSet", "${REPLICA_ID}", "--bind_ip_all", "--port", "${PORT_PRIMARY}", "--keyFile", "/data/mongo-replication.key"]
+    ports:
+      - ${PORT_PRIMARY}:${PORT_PRIMARY}
+    volumes:
+      - ./data/${NAME_PRIMARY}:/data/db
+      - ./mongo-replication.key:/data/mongo-replication.key
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${PASSWORD}
+      MONGO_INITDB_DATABASE: ${DB}
+    logging:
+      options:
+        max-size: 10mb
+
+  mongodb_secondary_1:
+    networks:
+      - default
+    image: mongo:6-jammy
+    container_name: ${NAME_SECONDARY_1}
+    restart: always
+    command: ["--replSet", "${REPLICA_ID}", "--bind_ip_all", "--port", "${PORT_SECONDARY_1}", "--keyFile", "/data/mongo-replication.key"]
+    ports:
+      - ${PORT_SECONDARY_1}:${PORT_SECONDARY_1}
+    volumes:
+      - ./data/${NAME_SECONDARY_1}:/data/db
+      - ./mongo-replication.key:/data/mongo-replication.key
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${PASSWORD}
+      MONGO_INITDB_DATABASE: ${DB}
+    logging:
+      options:
+        max-size: 10mb
+
+  mongodb_secondary_2:
+    networks:
+      - default
+    image: mongo:6-jammy
+    container_name: ${NAME_SECONDARY_2}
+    restart: always
+    command: ["--replSet", "${REPLICA_ID}", "--bind_ip_all",  "--port", "${PORT_SECONDARY_2}", "--keyFile", "/data/mongo-replication.key"]
+    ports:
+      - ${PORT_SECONDARY_2}:${PORT_SECONDARY_2}
+    volumes:
+      - ./data/${NAME_SECONDARY_2}:/data/db
+      - ./mongo-replication.key:/data/mongo-replication.key
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${PASSWORD}
+      MONGO_INITDB_DATABASE: ${DB}
+    logging:
+      options:
+        max-size: 10mb
+
+networks:
+  default:
+    driver: bridge
