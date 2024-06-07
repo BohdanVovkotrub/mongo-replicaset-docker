@@ -236,3 +236,9 @@ const using = async () => {
     }
 }
 ```
+
+In Terminal run:
+
+```
+node index.js
+```
