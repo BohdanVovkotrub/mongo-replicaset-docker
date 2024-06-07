@@ -148,10 +148,7 @@ async function preSave(next) {
 async function postSave(savedUser, next) {
   try {
     if (!savedUser) return;
-    if (Array.isArray(savedUser.usergroups) && savedUser.usergroups.length > 0)
-      await addUserToUsergroups(savedUser._id, savedUser.usergroups);
-    if (Array.isArray(savedUser.roles) && savedUser.roles.length > 0)
-      await addUserToRoles(savedUser._id, savedUser.roles);
+    console.log(`New user named <${savedUser.name}> was created with id <${savedUser._id}>`);
     next();
   } catch (error) {
     next(error);
