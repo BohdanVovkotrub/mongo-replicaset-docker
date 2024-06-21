@@ -1,3 +1,4 @@
+
 @echo off
 
 setlocal
@@ -8,16 +9,73 @@ for /f "usebackq tokens=1,2 delims==" %%a in (.env) do (
 )
 
 
+
 set "main_dir=%cd%"
 cd %main_dir%
 
-mkdir data 
-cd data
-mkdir %NAME_PRIMARY%
-mkdir %NAME_SECONDARY_1%
-mkdir %NAME_SECONDARY_2%
-cd %main_dir%
+if not exist data (
+  mkdir data 
+)
 
+if not exist data\%NAME_PRIMARY% (
+  mkdir data\%NAME_PRIMARY% 
+)
+if not exist data\%NAME_PRIMARY%\db (
+  mkdir data\%NAME_PRIMARY%\db
+)
+if not exist data\%NAME_PRIMARY%\configdb (
+  mkdir data\%NAME_PRIMARY%\configdb
+)
+if not exist data\%NAME_PRIMARY%\replication_key (
+  mkdir data\%NAME_PRIMARY%\replication_key
+)
+if not exist data\%NAME_PRIMARY%\replication_key\mongo-replication.key (
+  copy mongo-replication.key data\%NAME_PRIMARY%\replication_key\mongo-replication.key
+)
+
+if not exist data\%NAME_SECONDARY_1% (
+  mkdir data\%NAME_SECONDARY_1% 
+)
+if not exist data\%NAME_SECONDARY_1%\db (
+  mkdir data\%NAME_SECONDARY_1%\db
+)
+if not exist data\%NAME_SECONDARY_1%\configdb (
+  mkdir data\%NAME_SECONDARY_1%\configdb
+)
+if not exist data\%NAME_SECONDARY_1%\replication_key (
+  mkdir data\%NAME_SECONDARY_1%\replication_key
+)
+if not exist data\%NAME_SECONDARY_1%\replication_key\mongo-replication.key (
+  copy mongo-replication.key data\%NAME_SECONDARY_1%\replication_key\mongo-replication.key
+)
+
+
+if not exist data\%NAME_SECONDARY_1% (
+  mkdir data\%NAME_SECONDARY_1% 
+)
+if not exist data\%NAME_SECONDARY_2%\db (
+  mkdir data\%NAME_SECONDARY_2%\db
+)
+if not exist data\%NAME_SECONDARY_2%\configdb (
+  mkdir data\%NAME_SECONDARY_2%\configdb
+)
+if not exist data\%NAME_SECONDARY_2%\replication_key (
+  mkdir data\%NAME_SECONDARY_2%\replication_key
+)
+if not exist data\%NAME_SECONDARY_2%\replication_key\mongo-replication.key (
+  copy mongo-replication.key data\%NAME_SECONDARY_2%\replication_key\mongo-replication.key
+)
+
+
+
+set NETWORK_NAME=bobos-net
+docker network ls | findstr /r "\b%NETWORK_NAME%\b" >nul
+if %ERRORLEVEL% neq 0 (
+  echo Creating network %NETWORK_NAME%
+  docker network create %NETWORK_NAME%
+) else (
+  echo Network %NETWORK_NAME% already exists
+)
 
 
 REM docker-compose -f docker-compose-mongodb.yml up -d --remove-orphans
