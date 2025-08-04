@@ -1,3 +1,6 @@
 data/
 .env
 *.log
+docker-compose-mongodb-primary.yml
+docker-compose-mongodb-secondary1.yml
+docker-compose-mongodb-secondary2.yml
