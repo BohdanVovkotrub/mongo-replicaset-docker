@@ -1,14 +1,8 @@
 @echo off
+setlocal 
 
-setlocal
+REM Please, run this script from run.cmd at main directory!!!
 
-REM load environments from .env
-for /f "usebackq tokens=1,2 delims==" %%a in (.env) do (
-    set "%%a=%%b"
-)
-
-
-set "main_dir=%cd%"
 cd %main_dir%
 
 if not exist data (
@@ -31,8 +25,7 @@ if not exist data\%NAME_PRIMARY%\replication_key\mongo-replication.key (
   copy mongo-replication.key data\%NAME_PRIMARY%\replication_key\mongo-replication.key
 )
 
-REM Generate docker-compose-mongodb-primary.yml
-set "TEMPLATE_COMPOSE=compose.mongodb-primary.template.yml"
+set "TEMPLATE_COMPOSE=compose-templates\compose.mongodb-primary.template.yml"
 set "OUTPUT_COMPOSE=docker-compose-mongodb-primary.yml"
 
 REM Copy template to final file
@@ -44,15 +37,10 @@ echo networks: >> %OUTPUT_COMPOSE%
 echo   %DOCKER_NETWORK_NAME%: >> %OUTPUT_COMPOSE%
 echo     external: true >> %OUTPUT_COMPOSE%
 
-
-
 echo Creating network %DOCKER_NETWORK_NAME% if it is not exists
 docker network inspect %DOCKER_NETWORK_NAME% >nul 2>&1 || docker network create %DOCKER_NETWORK_NAME%
 
-
-REM docker-compose -f docker-compose-mongodb.yml up -d --remove-orphans
 docker-compose -f %OUTPUT_COMPOSE% up -d 
-
 
 endlocal
 exit /b
