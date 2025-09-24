@@ -1,0 +1,5 @@
+data/
+.env
+.git-token
+*.log
+docker-compose---*
