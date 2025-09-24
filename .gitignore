@@ -2,4 +2,5 @@ data/
 .env
 .git-token
 *.log
+docker-compose.yml
 docker-compose---*
