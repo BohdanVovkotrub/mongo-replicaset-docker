@@ -6,15 +6,17 @@ if [ -f /data/db/replica_initialized.flag ]; then
 fi
 
 /container_scripts/wait-for-it.sh mongo1:${PORT_MONGO1} -t ${TIMEOUT_INIT_REPLICA} -- \
-mongosh -u "${MONGO_INITDB_ROOT_USERNAME}" -p "${MONGO_INITDB_ROOT_PASSWORD}" --authenticationDatabase admin --host mongo1 --eval "
+echo "Sleep for ${TIMEOUT_INIT_REPLICA} sec..." \
+&& sleep ${TIMEOUT_INIT_REPLICA} \
+&& mongosh -u "${MONGO_INITDB_ROOT_USERNAME}" -p "${MONGO_INITDB_ROOT_PASSWORD}" --authenticationDatabase admin --host mongo1 --eval "
   try {
     rs.status();
     print('Replica set already initialized.');
   } catch (e) {
-    var timeoutReplica = parseInt(${TIMEOUT_INIT_REPLICA}) * 1000 * 1.5;
     print('Replica set not initialized. Proceeding with initialization...');
-    print('>>> Sleep for ' + timeoutReplica + ' started');
-    sleep(timeoutReplica);
+    var timeoutReplica = parseInt(${TIMEOUT_INIT_REPLICA}) * 1;
+    print('>>> Sleep for ' + timeoutReplica + ' sec started');
+    sleep(timeoutReplica * 1000);
     print('>>> Sleep finished');
     rs.initiate({
       _id: '${REPLICA_ID}',

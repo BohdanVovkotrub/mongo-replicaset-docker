@@ -10,7 +10,6 @@ else
     echo 'Keyfile generated and permissions set.';
 fi
 
-# chmod +x -R /container_scripts/ ;
 bash /container_scripts/set-my-timezone.sh;
 echo 'Now You can start the MongoDB containers!';
 exit 0;
