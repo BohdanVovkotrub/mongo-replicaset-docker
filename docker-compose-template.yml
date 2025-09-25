@@ -12,6 +12,8 @@ services:
     volumes:
       - keyfiles:/data/keyfiles:rw
       - container_scripts:/container_scripts:rw
+      - firstinit_data_db:/data/db:rw
+      - firstinit_data_configdb:/data/configdb:rw
     networks:
       - ${DOCKER_NETWORK_NAME}
     restart: "no"
@@ -25,7 +27,8 @@ services:
     volumes:
       - keyfiles:/data/keyfiles:ro
       - container_scripts:/container_scripts:ro
-      - mongo1_data:/data/db:rw
+      - mongo1_data_db:/data/db:rw
+      - mongo1_data_configdb:/data/configdb:rw
     networks:
       - ${DOCKER_NETWORK_NAME}
     environment:
@@ -55,8 +58,9 @@ services:
       - "${PORT_MONGO2}:${PORT_MONGO2}"
     volumes:
       - keyfiles:/data/keyfiles:ro
-      - mongo2_data:/data/db:rw
       - container_scripts:/container_scripts:ro
+      - mongo2_data_db:/data/db:rw
+      - mongo2_data_configdb:/data/configdb:rw
     networks:
       - ${DOCKER_NETWORK_NAME}
     environment:
@@ -77,8 +81,9 @@ services:
       - "${PORT_MONGO3}:${PORT_MONGO3}"
     volumes:
       - keyfiles:/data/keyfiles:ro
-      - mongo3_data:/data/db
       - container_scripts:/container_scripts:ro
+      - mongo3_data_db:/data/db:rw
+      - mongo3_data_configdb:/data/configdb:rw
     networks:
       - ${DOCKER_NETWORK_NAME}
     environment:
@@ -113,6 +118,8 @@ services:
       TIMEOUT_INIT_REPLICA: ${TIMEOUT_INIT_REPLICA}
     volumes:
       - container_scripts:/container_scripts:ro
+      - mongoinitrs_data_db:/data/db:rw
+      - mongoinitrs_data_configdb:/data/configdb:rw
     networks:
       - ${DOCKER_NETWORK_NAME}
     restart: "no"
@@ -148,37 +155,82 @@ services:
 
 
 volumes:
-  mongo1_data:
+  firstinit_data_db:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: ./data/mongo1/db
+      device: ${PWD}/data/firstinit/db
+  firstinit_data_configdb:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/firstinit/configdb
+  
+  mongoinitrs_data_db:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/mongoinitrs/db
+  mongoinitrs_data_configdb:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/mongoinitrs/configdb
 
-  mongo2_data:
+  mongo1_data_db:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: ./data/mongo2/db
+      device: ${PWD}/data/mongo1/db
+  mongo1_data_configdb:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/mongo1/configdb
 
-  mongo3_data:
+
+  mongo2_data_db:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: ./data/mongo3/db
+      device: ${PWD}/data/mongo2/db
+  mongo2_data_configdb:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/mongo2/configdb
+
+  mongo3_data_db:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/mongo3/db
+  mongo3_data_configdb:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/mongo3/configdb
 
   keyfiles:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: ./data/keyfiles
+      device: ${PWD}/data/keyfiles
 
   container_scripts:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: ./container_scripts
+      device: ${PWD}/container_scripts
